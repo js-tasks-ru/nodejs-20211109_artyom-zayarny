@@ -4,23 +4,33 @@ const os = require('os');
 class LineSplitStream extends stream.Transform {
   constructor(options) {
     super(options);
-    this.mem = '';
+
+    this.remainder = '';
   }
 
   _transform(chunk, encoding, callback) {
-    const chunkStr = chunk.toString();
-    for (const char of chunkStr.split('')) {
-      if (char === os.EOL) {
-        this.push(mem);
-        this.mem = '';
-      } else {
-        this.mem += char;
+    const str = this.remainder + chunk.toString();
+
+    let line = '';
+    for (const character of str.split('')) {
+      if (character === os.EOL) {
+        this.push(line);
+        line = '';
+        continue;
       }
+
+      line += character;
     }
+    this.remainder = line;
+
     callback();
   }
 
   _flush(callback) {
+    if (this.remainder) {
+      this.push(this.remainder);
+    }
+
     callback();
   }
 }
