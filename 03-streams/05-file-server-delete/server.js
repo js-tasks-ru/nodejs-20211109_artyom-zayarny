@@ -25,9 +25,7 @@ server.on('request', (req, res) => {
         res.end('File not found');
         return;
       }
-
       removeFile(filepath, res);
-
       break;
 
     default:
