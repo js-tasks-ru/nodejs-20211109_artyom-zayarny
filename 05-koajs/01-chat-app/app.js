@@ -9,7 +9,6 @@ const Router = require('koa-router');
 const router = new Router();
 
 const clients = new Set();
-
 router.get('/subscribe', async (ctx, next) => {
   const message = await new Promise((resolve, reject) => {
     clients.add(resolve);
